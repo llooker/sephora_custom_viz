@@ -3,7 +3,13 @@ looker.plugins.visualizations.add({
         html_template: {
             type: "string",
             label: "HTML Template",
-            default: `<div style="text-align: center; color: #ff0000; font-size: 5rem; font-weight: 700;">{{ value }}</div>`
+            default: `<div style="text-align: center; font-family: Arial, Helvetica, sans-serif;">
+            <img src="https://1000logos.net/wp-content/uploads/2018/08/Sephora-symbol.jpg" height="100" style="margin: 100px 0;" />
+            <p>Notre CA total pour la période:</p>
+            <p style="text-align: center; color: #ff484c; font-size: 3rem; font-weight: 500;">
+                {{ rendered_value }}
+            </p>
+        </div>`
         }
     },
 
@@ -25,7 +31,9 @@ looker.plugins.visualizations.add({
 
         const firstCell = firstRow[qFields.dimension_like.length > 0 ? qFields.dimension_like[0].name : qFields.measure_like[0].name];
 
-        const htmlForCell = LookerCharts.Utils.filterableValueForCell(firstCell);
+        const formatValue = (x) => "€"+parseFloat(x).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+        const htmlForCell = formatValue(LookerCharts.Utils.filterableValueForCell(firstCell));
         const htmlTemplate = config && config.html_template || this.options.html_template.default;
 
         const htmlFormatted = htmlTemplate.replace(/{{.*}}/g, htmlForCell);
